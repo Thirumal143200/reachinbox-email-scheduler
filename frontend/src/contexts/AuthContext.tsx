@@ -2,6 +2,22 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types/index.js';
 import { api } from '../api/client.js';
 
+// Resolve the backend origin for OAuth redirects (window.location.href bypasses the Vite proxy).
+// VITE_API_URL is e.g. "https://reachinbox-backend-w6uq.onrender.com/api" — we strip "/api" to
+// get the bare origin for building redirect URLs.
+function getBackendBase(): string {
+  const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
+  if (apiUrl) {
+    // Remove trailing "/api" suffix to get the root backend URL
+    return apiUrl.replace(/\/api$/, '');
+  }
+  if (import.meta.env.PROD) {
+    return 'https://reachinbox-backend-w6uq.onrender.com';
+  }
+  // Local dev: use relative path (proxied by Vite to localhost:5000)
+  return '';
+}
+
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
@@ -33,7 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const loginWithGoogle = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = `${getBackendBase()}/api/auth/google`;
   };
 
   const logout = async () => {

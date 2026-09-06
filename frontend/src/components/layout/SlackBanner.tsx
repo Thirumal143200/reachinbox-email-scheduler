@@ -27,7 +27,13 @@ export const SlackBanner: React.FC = () => {
   }, []);
 
   const handleConnect = () => {
-    window.location.href = '/api/slack/connect';
+    const apiUrl = import.meta.env.VITE_API_URL as string | undefined;
+    const backendBase = apiUrl
+      ? apiUrl.replace(/\/api$/, '')
+      : import.meta.env.PROD
+      ? 'https://reachinbox-backend-w6uq.onrender.com'
+      : '';
+    window.location.href = `${backendBase}/api/slack/connect`;
   };
 
   const handleDisconnect = async () => {

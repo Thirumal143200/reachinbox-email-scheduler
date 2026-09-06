@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Right actions: BullMQ Link, User Profile, Compose */}
           <div className="flex items-center gap-3">
             <a
-              href="/admin/queues"
+              href={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace(/\/api$/, "") : import.meta.env.PROD ? "https://reachinbox-backend-w6uq.onrender.com" : ""}/admin/queues`}
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors border border-gray-200"

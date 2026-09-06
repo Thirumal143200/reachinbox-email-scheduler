@@ -1,6 +1,12 @@
 import { User, EmailRecord, SlackStatus, SchedulePayload } from '../types/index.js';
 
-const BASE_URL = '/api';
+// In production, VITE_API_URL points to the Render backend.
+// In local dev the Vite proxy rewrites /api -> http://localhost:5000, so we fall back to '/api'.
+const BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://reachinbox-backend-w6uq.onrender.com/api'
+    : '/api');
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}${endpoint}`;
