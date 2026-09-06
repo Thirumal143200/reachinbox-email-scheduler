@@ -9,11 +9,19 @@ export function getElasticsearchClient(): Client | null {
   if (esClient) return esClient;
 
   try {
-    esClient = new Client({
+    // Build client options — use API key auth when configured (Elastic Cloud / production),
+    // fall back to unauthenticated for local Docker development.
+    const clientOptions: ConstructorParameters<typeof Client>[0] = {
       node: config.elasticsearch.url,
       maxRetries: 3,
       requestTimeout: 5000,
-    });
+    };
+
+    if (config.elasticsearch.apiKey) {
+      clientOptions.auth = { apiKey: config.elasticsearch.apiKey };
+    }
+
+    esClient = new Client(clientOptions);
     return esClient;
   } catch (error) {
     logger.warn({ error }, 'Could not initialize Elasticsearch client');
