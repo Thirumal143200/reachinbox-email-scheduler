@@ -44,7 +44,12 @@ export const authController = {
         return res.status(500).json({ error: 'Failed to logout' });
       }
       req.session.destroy(() => {
-        res.clearCookie('connect.sid');
+        const isProd = config.env === 'production';
+        res.clearCookie('connect.sid', {
+          secure: isProd,
+          httpOnly: true,
+          sameSite: isProd ? 'none' : 'lax',
+        });
         return res.json({ message: 'Logged out successfully' });
       });
     });
